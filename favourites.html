@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#11100f">
+  <meta name="description" content="Your favorite films, all in one place. Curate your personal Nightjar collection.">
+  <title>Saved favourites — Nightjar</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <button class="menu-btn" onclick="openSidebar()" aria-label="Open menu">
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+        </button>
+        <a href="index.html" class="logo">
+          <span class="logo-text">Nightjar</span>
+        </a>
+      </div>
+      <div class="nav-center">
+        <div class="nav-search">
+          <div class="search-wrapper">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="Find a film, actor, or director…" aria-label="Search films" autocomplete="off">
+            <div class="search-results" id="searchResults"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <span class="page-eyebrow">YOUR COLLECTION</span>
+      <h1 class="page-title">Saved favourites</h1>
+      <p class="page-subtitle" id="favSubtitle">The films you want to keep close</p>
+    </div>
+  </div>
+
+  <!-- Favourites Grid -->
+  <main class="main-content">
+    <div class="container">
+      <div class="movies-grid" id="favsGrid"></div>
+      <div class="empty-state hidden" id="emptyState">
+        <div class="empty-icon" aria-hidden="true"></div>
+        <h3>Your collection starts here</h3>
+        <p>Find a film you love and save it to make this space yours.</p>
+        <a href="index.html" class="btn btn-primary" style="margin-top:1.5rem;display:inline-flex">Browse Movies</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="movieModal">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-content" id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <footer class="footer">
+    <div class="container">
+      <p><strong>Nightjar</strong><span class="footer-note"> A good film is closer than you think.</span></p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script>
+    // Favourites page logic
+    updateFavCount();
+
+    async function loadFavs() {
+      const ids = getFavs();
+      const grid = document.getElementById('favsGrid');
+      const empty = document.getElementById('emptyState');
+      const subtitle = document.getElementById('favSubtitle');
+
+      if (!ids.length) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+        subtitle.textContent = 'You have no saved films yet';
+        return;
+      }
+      empty.classList.add('hidden');
+      subtitle.textContent = `${ids.length} film${ids.length > 1 ? 's' : ''} saved`;
+      renderSkeletons('favsGrid', ids.length);
+      const movies = await getMultipleMovies(ids);
+      renderGrid('favsGrid', movies);
+    }
+
+    document.getElementById('modalClose')?.addEventListener('click', closeModal);
+    document.getElementById('modalOverlay')?.addEventListener('click', e => {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Search dropdown on favourites page
+    const searchInput = document.getElementById('searchInput');
+    const searchResultsBox = document.getElementById('searchResults');
+    let st = null;
+    searchInput?.addEventListener('input', () => {
+      clearTimeout(st);
+      const q = searchInput.value.trim();
+      if (!q) { searchResultsBox.classList.remove('open'); return; }
+      st = setTimeout(async () => {
+        searchResultsBox.innerHTML = '<div class="search-loading">Searching…</div>';
+        searchResultsBox.classList.add('open');
+        const data = await searchMovies(q);
+        if (!data.Search) { searchResultsBox.innerHTML = '<div class="search-loading">No results.</div>'; return; }
+        searchResultsBox.innerHTML = data.Search.slice(0,6).map(m => `
+          <div class="search-result-item" onclick="(async()=>{searchResultsBox.classList.remove('open');await openModal('${m.imdbID}')})()">
+            <img class="search-result-img" src="${m.Poster!=='N/A'?m.Poster:''}" onerror="this.style.display='none'" alt="">
+            <div class="search-result-info">
+              <div class="search-result-title">${m.Title}</div>
+              <div class="search-result-year">${m.Year}</div>
+            </div>
+          </div>`).join('');
+      }, 380);
+    });
+    document.addEventListener('click', e => { if (!e.target.closest('.nav-search')) searchResultsBox?.classList.remove('open'); });
+
+    loadFavs();
+  </script>
+</body>
+</html>

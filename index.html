@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#11100f">
+  <meta name="description" content="Nightjar — Find your next favorite film, explore the collection, and keep a list for later.">
+  <title>Nightjar — Find your next favorite film</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <button class="menu-btn" onclick="openSidebar()" aria-label="Open menu">
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+        </button>
+        <a href="index.html" class="logo">
+          <span class="logo-text">Nightjar</span>
+        </a>
+      </div>
+      <div class="nav-center">
+        <div class="nav-search">
+          <div class="search-wrapper">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="Find a film, actor, or director…" aria-label="Search films" autocomplete="off">
+            <div class="search-results" id="searchResults"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-backdrop" id="heroBackdrop"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content" id="heroContent">
+      <div class="hero-skeleton">Finding your next favorite…</div>
+    </div>
+  </section>
+
+  <!-- Genre Filter -->
+  <section class="genre-section">
+    <div class="container">
+      <div class="genre-pills" id="genrePills">
+        <button class="genre-pill active" data-genre="all">All</button>
+        <button class="genre-pill" data-genre="Action">Action</button>
+        <button class="genre-pill" data-genre="Drama">Drama</button>
+        <button class="genre-pill" data-genre="Comedy">Comedy</button>
+        <button class="genre-pill" data-genre="Crime">Crime</button>
+        <button class="genre-pill" data-genre="Sci-Fi">Sci-Fi</button>
+        <button class="genre-pill" data-genre="Thriller">Thriller</button>
+        <button class="genre-pill" data-genre="Horror">Horror</button>
+        <button class="genre-pill" data-genre="Animation">Animation</button>
+        <button class="genre-pill" data-genre="Romance">Romance</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+
+      <!-- Trending Now -->
+      <section class="movies-section" id="trendingSection">
+        <div class="section-header">
+          <h2 class="section-title">In the spotlight</h2>
+          <span class="section-subtitle">Films people are talking about</span>
+        </div>
+        <div class="movies-grid" id="trendingGrid"></div>
+      </section>
+
+      <!-- All-Time Classics -->
+      <section class="movies-section" id="classicsSection">
+        <div class="section-header">
+          <h2 class="section-title">The essentials</h2>
+          <span class="section-subtitle">Stories that stay with you</span>
+        </div>
+        <div class="movies-grid" id="classicsGrid"></div>
+      </section>
+
+      <!-- Action & Adventure -->
+      <section class="movies-section" id="actionSection">
+        <div class="section-header">
+          <h2 class="section-title">Full of action</h2>
+          <span class="section-subtitle">Big worlds, bigger thrills</span>
+        </div>
+        <div class="movies-grid" id="actionGrid"></div>
+      </section>
+
+      <!-- Sci-Fi -->
+      <section class="movies-section" id="scifiSection">
+        <div class="section-header">
+          <h2 class="section-title">Other worlds</h2>
+          <span class="section-subtitle">A little further than reality</span>
+        </div>
+        <div class="movies-grid" id="scifiGrid"></div>
+      </section>
+
+      <!-- Horror -->
+      <section class="movies-section" id="horrorSection">
+        <div class="section-header">
+          <h2 class="section-title">After dark</h2>
+          <span class="section-subtitle">For the beautifully brave</span>
+        </div>
+        <div class="movies-grid" id="horrorGrid"></div>
+      </section>
+
+      <!-- Animation -->
+      <section class="movies-section" id="animationSection">
+        <div class="section-header">
+          <h2 class="section-title">Animated worlds</h2>
+          <span class="section-subtitle">Imagination, frame by frame</span>
+        </div>
+        <div class="movies-grid" id="animationGrid"></div>
+      </section>
+
+      <!-- Search Results -->
+      <section class="movies-section hidden" id="searchSection">
+        <div class="section-header">
+          <h2 class="section-title">Your search</h2>
+          <span class="section-subtitle" id="searchSubtitle"></span>
+        </div>
+        <div class="movies-grid" id="searchGrid"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="movieModal">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-content" id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <footer class="footer">
+    <div class="container">
+      <p><strong>Nightjar</strong><span class="footer-note"> A good film is closer than you think.</span></p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
